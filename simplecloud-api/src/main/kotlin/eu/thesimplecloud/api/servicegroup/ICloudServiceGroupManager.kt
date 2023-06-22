@@ -64,6 +64,7 @@ interface ICloudServiceGroupManager : ICacheList<ICloudServiceGroupUpdater, IClo
             DefaultServerGroup(
                 groupName,
                 templateName,
+                "-",
                 memory,
                 maxPlayers,
                 minimumOnlineServiceCount,
@@ -105,6 +106,7 @@ interface ICloudServiceGroupManager : ICacheList<ICloudServiceGroupUpdater, IClo
             DefaultLobbyGroup(
                 groupName,
                 templateName,
+                "-",
                 memory,
                 maxPlayers,
                 minimumOnlineServiceCount,
@@ -145,6 +147,7 @@ interface ICloudServiceGroupManager : ICacheList<ICloudServiceGroupUpdater, IClo
             DefaultProxyGroup(
                 groupName,
                 templateName,
+                "-",
                 memory,
                 maxPlayers,
                 minimumOnlineServiceCount,

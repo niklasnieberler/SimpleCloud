@@ -33,6 +33,7 @@ import eu.thesimplecloud.jsonlib.JsonLibExclude
 open class DefaultServerGroup(
     name: String,
     templateName: String,
+    serviceNameSplitter: String,
     maxMemory: Int,
     maxPlayers: Int,
     minimumOnlineServiceCount: Int,
@@ -49,6 +50,7 @@ open class DefaultServerGroup(
 ) : AbstractServiceGroup(
     name,
     templateName,
+    serviceNameSplitter,
     maxMemory,
     maxPlayers,
     minimumOnlineServiceCount,

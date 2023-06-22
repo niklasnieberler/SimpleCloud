@@ -97,7 +97,7 @@ interface ICloudService : ICacheValue<ICloudServiceUpdater>, ICloudServiceVariab
      */
     fun getServiceGroup(): ICloudServiceGroup =
         CloudAPI.instance.getCloudServiceGroupManager().getServiceGroupByName(getGroupName())
-            ?: throw IllegalStateException("Can't find the service group of an registered service")
+            ?: throw IllegalStateException("Can't find the service group ${getGroupName()} of an registered service")
 
     /**
      * Returns the maximum amount of RAM for this service in MB
@@ -147,7 +147,7 @@ interface ICloudService : ICacheValue<ICloudServiceUpdater>, ICloudServiceVariab
      * Returns the name of this service.
      * e.g. Lobby-1
      */
-    override fun getName(): String = getGroupName() + "-" + getServiceNumber()
+    override fun getName(): String = getGroupName() + getServiceGroup().getServiceNameSplitter() + getServiceNumber()
 
     /**
      *  Returns a promise of players currently connected to this service

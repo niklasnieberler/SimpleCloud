@@ -90,6 +90,14 @@ open class DefaultServiceGroupUpdater(
         changes["maximumOnlineServiceCount"] = count
     }
 
+    override fun getServiceNameSplitter(): String {
+        return getChangedValue("serviceNameSplitter") ?: serviceGroup.getServiceNameSplitter()
+    }
+
+    override fun setServiceNameSplitter(splitter: String) {
+        changes["serviceNameSplitter"] = splitter
+    }
+
     override fun isInMaintenance(): Boolean {
         return getChangedValue("maintenance") ?: serviceGroup.isInMaintenance()
     }

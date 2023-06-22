@@ -89,6 +89,16 @@ interface ICloudServiceGroupVariables {
     fun setMaximumOnlineServiceCount(count: Int)
 
     /**
+     * Returns the splitter for the services of this group
+     */
+    fun getServiceNameSplitter(): String
+
+    /**
+     * Set the splitter for the services of this group
+     */
+    fun setServiceNameSplitter(splitter: String)
+
+    /**
      * Returns whether this service group is in maintenance
      */
     fun isInMaintenance(): Boolean

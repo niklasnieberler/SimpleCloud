@@ -36,7 +36,8 @@ class ServiceLocation(
     pitch: Float
 ) : SimpleLocation(worldName, x, y, z, yaw, pitch) {
 
-    val groupName = serviceName.split("-").dropLast(1).joinToString("-")
+    val groupName = CloudAPI.instance.getCloudServiceManager()
+        .getCloudServiceByName(serviceName)!!.getGroupName()
 
     constructor(
         service: ICloudService,

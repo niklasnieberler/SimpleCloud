@@ -34,6 +34,7 @@ import eu.thesimplecloud.jsonlib.JsonLibExclude
 class DefaultLobbyGroup(
     name: String,
     templateName: String,
+    serviceNameSplitter: String,
     maxMemory: Int,
     maxPlayers: Int,
     minimumOnlineServiceCount: Int,
@@ -51,6 +52,7 @@ class DefaultLobbyGroup(
 ) : DefaultServerGroup(
     name,
     templateName,
+    serviceNameSplitter,
     maxMemory,
     maxPlayers,
     minimumOnlineServiceCount,

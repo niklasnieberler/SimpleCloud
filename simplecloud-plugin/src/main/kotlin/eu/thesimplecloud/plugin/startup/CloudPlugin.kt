@@ -50,6 +50,9 @@ class CloudPlugin(val cloudServicePlugin: ICloudServicePlugin) : ICloudModule {
     private var thisService: ICloudService? = null
 
     @Volatile
+    private var thisServiceGroupName: String? = null
+
+    @Volatile
     lateinit var communicationClient: INettyClient
         private set
 
@@ -109,6 +112,7 @@ class CloudPlugin(val cloudServicePlugin: ICloudServicePlugin) : ICloudModule {
     private fun loadConfig(): Boolean {
         val jsonLib = JsonLib.fromJsonFile(File("SIMPLE-CLOUD.json")) ?: return false
         thisServiceName = jsonLib.getString("serviceName") ?: return false
+        thisServiceGroupName = jsonLib.getString("groupName") ?: return false
         val host = jsonLib.getString("managerHost") ?: return false
         val port = jsonLib.getInt("managerPort") ?: return false
         this.communicationClient = NettyClient(host, port, ConnectionHandlerImpl())
@@ -146,10 +150,6 @@ class CloudPlugin(val cloudServicePlugin: ICloudServicePlugin) : ICloudModule {
         thisService().update()
     }
 
-    fun getGroupName(): String {
-        val array = this.thisServiceName.split("-".toRegex())
-        return array.dropLast(1).joinToString("-")
-    }
-
+    fun getGroupName(): String = this.thisServiceGroupName!!
 
 }

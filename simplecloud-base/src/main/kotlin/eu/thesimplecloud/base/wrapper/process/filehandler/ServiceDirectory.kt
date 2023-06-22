@@ -146,6 +146,7 @@ class ServiceDirectory(private val cloudService: ICloudService) {
         JsonLib.empty().append("managerHost", communicationClient.getHost())
             .append("managerPort", communicationClient.getPort())
             .append("serviceName", cloudService.getName())
+            .append("groupName", cloudService.getGroupName())
             .saveAsFile(File(this.serviceTmpDirectory, "SIMPLE-CLOUD.json"))
     }
 

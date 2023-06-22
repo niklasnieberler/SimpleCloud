@@ -30,6 +30,7 @@ import eu.thesimplecloud.api.servicegroup.ICloudServiceGroupUpdater
 abstract class AbstractServiceGroup(
     private val name: String,
     @Volatile private var templateName: String,
+    @Volatile private var serviceNameSplitter: String,
     @Volatile private var maxMemory: Int,
     @Volatile private var maxPlayers: Int,
     @Volatile private var minimumOnlineServiceCount: Int,
@@ -47,6 +48,16 @@ abstract class AbstractServiceGroup(
 
     @Volatile
     private var serviceVersion = serviceVersion.name
+
+    override fun getServiceNameSplitter(): String {
+        if (this.serviceNameSplitter == null)
+            return "-"
+        return this.serviceNameSplitter
+    }
+
+    override fun setServiceNameSplitter(splitter: String) {
+        getUpdater().setServiceNameSplitter(splitter)
+    }
 
     override fun getName(): String = this.name
 
@@ -130,6 +141,7 @@ abstract class AbstractServiceGroup(
 
     override fun applyValuesFromUpdater(updater: ICloudServiceGroupUpdater) {
         this.templateName = updater.getTemplateName()
+        this.serviceNameSplitter = updater.getServiceNameSplitter()
         this.maxMemory = updater.getMaxMemory()
         this.maxPlayers = updater.getMaxPlayers()
         this.minimumOnlineServiceCount = updater.getMinimumOnlineServiceCount()
