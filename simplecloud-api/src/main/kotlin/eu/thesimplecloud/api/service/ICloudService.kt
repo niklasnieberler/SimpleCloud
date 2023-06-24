@@ -110,6 +110,11 @@ interface ICloudService : ICacheValue<ICloudServiceUpdater>, ICloudServiceVariab
     fun getUsedMemory(): Int
 
     /**
+     * Returns the protocol version of this server
+     */
+    fun getMinecraftVersion(): Int
+
+    /**
      * Returns the name of the wrapper this service is running on
      */
     fun getWrapperName(): String?

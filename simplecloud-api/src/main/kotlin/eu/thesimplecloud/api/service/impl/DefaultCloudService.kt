@@ -65,6 +65,9 @@ data class DefaultCloudService(
     private var usedMemory = 0
 
     @Volatile
+    private var minecraftVersion = -1
+
+    @Volatile
     private var authenticated = false
 
     @JsonLibExclude
@@ -82,6 +85,8 @@ data class DefaultCloudService(
 
 
     override fun getServiceVersion(): ServiceVersion = this.serviceVersion
+
+    override fun getMinecraftVersion(): Int = this.minecraftVersion
 
     override fun getTemplateName(): String = this.templateName
 
@@ -101,6 +106,10 @@ data class DefaultCloudService(
 
     fun setPort(port: Int) {
         this.port = port
+    }
+
+    fun setMinecraftVersion(minecraftVersion: Int) {
+        this.minecraftVersion = minecraftVersion
     }
 
     override fun getWrapperName(): String? = this.wrapperName
@@ -188,6 +197,7 @@ data class DefaultCloudService(
         this.authenticated = updateService.isAuthenticated()
         this.wrapperName = updateService.getWrapperName()
         this.port = updateService.getPort()
+        this.minecraftVersion = updateService.getMinecraftVersion()
         this.usedMemory = updateService.getUsedMemory()
         this.propertyMap =
             this.getMapWithNewestProperties(updateService.getProperties()) as ConcurrentMap<String, Property<*>>

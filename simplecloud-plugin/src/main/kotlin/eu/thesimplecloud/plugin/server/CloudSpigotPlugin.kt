@@ -24,14 +24,17 @@ package eu.thesimplecloud.plugin.server
 
 import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.player.ICloudPlayerManager
+import eu.thesimplecloud.api.service.impl.DefaultCloudService
 import eu.thesimplecloud.plugin.impl.player.CloudPlayerManagerSpigot
 import eu.thesimplecloud.plugin.listener.CloudListener
 import eu.thesimplecloud.plugin.server.listener.ReloadCommandBlocker
 import eu.thesimplecloud.plugin.server.listener.SpigotListener
 import eu.thesimplecloud.plugin.startup.CloudPlugin
+import eu.thesimplecloud.plugin.utils.ProtocolVersionFinder
 import org.bukkit.Bukkit
 import org.bukkit.plugin.java.JavaPlugin
 import org.bukkit.scheduler.BukkitRunnable
+import kotlin.concurrent.thread
 import kotlin.reflect.KClass
 
 class CloudSpigotPlugin : JavaPlugin(), ICloudServerPlugin {
@@ -55,6 +58,12 @@ class CloudSpigotPlugin : JavaPlugin(), ICloudServerPlugin {
         server.pluginManager.registerEvents(SpigotListener(), this)
         server.pluginManager.registerEvents(ReloadCommandBlocker(), this)
         synchronizeOnlineCountTask()
+
+        val cloudService = CloudPlugin.instance.thisService() as DefaultCloudService
+        cloudService.setMinecraftVersion(getProtocolVersion())
+        cloudService.update()
+
+        println(cloudService.getMinecraftVersion())
     }
 
     override fun onBeforeFirstUpdate() {
@@ -69,6 +78,16 @@ class CloudSpigotPlugin : JavaPlugin(), ICloudServerPlugin {
 
     override fun shutdown() {
         Bukkit.getServer().shutdown()
+    }
+
+    private fun getProtocolVersion(): Int {
+        val cloudService = CloudPlugin.instance.thisService()
+        return try {
+            ProtocolVersionFinder(cloudService.getHost(), cloudService.getPort()).getProtocolVersion()
+        } catch (exception: Exception) {
+            exception.printStackTrace()
+            -1
+        }
     }
 
     override fun getCloudPlayerManagerClass(): KClass<out ICloudPlayerManager> {
