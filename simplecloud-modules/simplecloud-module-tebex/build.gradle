@@ -1,0 +1,18 @@
+shadowJar {
+    archiveFileName.set("SimpleCloud-Tebex.jar")
+}
+
+dependencies {
+    compileOnly(project(":simplecloud-base")) {
+        transitive = false
+    }
+    compileOnly(project(":simplecloud-api")) {
+        transitive = false
+    }
+    compileOnly(project(":simplecloud-plugin")) {
+        transitive = false
+    }
+    compileOnly(project(":simplecloud-launcher")) {
+        transitive = false
+    }
+}
