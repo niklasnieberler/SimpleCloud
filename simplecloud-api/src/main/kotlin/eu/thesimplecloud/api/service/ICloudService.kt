@@ -112,7 +112,7 @@ interface ICloudService : ICacheValue<ICloudServiceUpdater>, ICloudServiceVariab
     /**
      * Returns the protocol version of this server
      */
-    fun getMinecraftVersion(): Int
+    fun getProtocolVersion(): Int
 
     /**
      * Returns the name of the wrapper this service is running on

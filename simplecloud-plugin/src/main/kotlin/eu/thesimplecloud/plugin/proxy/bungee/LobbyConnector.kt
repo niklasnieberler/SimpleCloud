@@ -31,11 +31,13 @@ import net.md_5.bungee.api.connection.ProxiedPlayer
 class LobbyConnector {
 
     fun getLobbyServer(player: ProxiedPlayer, filterServices: List<String> = emptyList()): ServerInfo? {
+        println(player.pendingConnection.version)
         val availableServices = getLobbyCloudServices(player)
         val serviceToConnectTo = availableServices
             .filter { !filterServices.contains(it.getName()) }
-            .filter { it.getMinecraftVersion() == player.pendingConnection.version }
-            .minByOrNull { it.getOnlineCount() } ?: getRandomCloudService(availableServices, filterServices)
+            .filter { it.getProtocolVersion() == player.pendingConnection.version }
+            .shuffled()
+            .minByOrNull { it.getOnlineCount() }!!
         return serviceToConnectTo?.let { ProxyServer.getInstance().getServerInfo(it.getName()) }
     }
 
@@ -45,6 +47,7 @@ class LobbyConnector {
     ): ICloudService? {
         return availableServices
             .filter { !filterServices.contains(it.getName()) }
+            .shuffled()
             .minByOrNull { it.getOnlineCount() }
     }
 

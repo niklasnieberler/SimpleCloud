@@ -22,6 +22,11 @@
 
 package eu.thesimplecloud.plugin.server
 
+import com.github.steveice10.mc.auth.service.SessionService
+import com.github.steveice10.mc.protocol.MinecraftConstants
+import com.github.steveice10.mc.protocol.MinecraftProtocol
+import com.github.steveice10.mc.protocol.data.status.handler.ServerInfoHandler
+import com.github.steveice10.packetlib.tcp.TcpClientSession
 import eu.thesimplecloud.api.CloudAPI
 import eu.thesimplecloud.api.player.ICloudPlayerManager
 import eu.thesimplecloud.api.service.impl.DefaultCloudService
@@ -30,12 +35,12 @@ import eu.thesimplecloud.plugin.listener.CloudListener
 import eu.thesimplecloud.plugin.server.listener.ReloadCommandBlocker
 import eu.thesimplecloud.plugin.server.listener.SpigotListener
 import eu.thesimplecloud.plugin.startup.CloudPlugin
-import eu.thesimplecloud.plugin.utils.ProtocolVersionFinder
 import org.bukkit.Bukkit
 import org.bukkit.plugin.java.JavaPlugin
 import org.bukkit.scheduler.BukkitRunnable
-import kotlin.concurrent.thread
+import java.net.Proxy
 import kotlin.reflect.KClass
+
 
 class CloudSpigotPlugin : JavaPlugin(), ICloudServerPlugin {
 
@@ -59,16 +64,28 @@ class CloudSpigotPlugin : JavaPlugin(), ICloudServerPlugin {
         server.pluginManager.registerEvents(ReloadCommandBlocker(), this)
         synchronizeOnlineCountTask()
 
-        val cloudService = CloudPlugin.instance.thisService() as DefaultCloudService
-        cloudService.setMinecraftVersion(getProtocolVersion())
-        cloudService.update()
 
-        println(cloudService.getMinecraftVersion())
+        handleServerProtocolVersion()
+    }
+
+    private fun handleServerProtocolVersion() {
+        val cloudService = CloudPlugin.instance.thisService() as DefaultCloudService
+        val sessionService = SessionService()
+        sessionService.proxy = Proxy.NO_PROXY
+        val protocol = MinecraftProtocol()
+        val client = TcpClientSession(cloudService.getHost(), cloudService.getPort(), protocol)
+        client.setFlag(MinecraftConstants.SESSION_SERVICE_KEY, sessionService)
+        client.setFlag(MinecraftConstants.SERVER_INFO_HANDLER_KEY, ServerInfoHandler { _, info ->
+            cloudService.setProtocolVersion(info.versionInfo.protocolVersion)
+            cloudService.update()
+            println(info.versionInfo.protocolVersion)
+        })
+        client.connect()
     }
 
     override fun onBeforeFirstUpdate() {
         //Service will be updated after this function was called
-        val motd = Bukkit.getServer().motd
+        val motd = server.motd
         CloudPlugin.instance.thisService().setMOTD(motd)
     }
 
@@ -78,16 +95,6 @@ class CloudSpigotPlugin : JavaPlugin(), ICloudServerPlugin {
 
     override fun shutdown() {
         Bukkit.getServer().shutdown()
-    }
-
-    private fun getProtocolVersion(): Int {
-        val cloudService = CloudPlugin.instance.thisService()
-        return try {
-            ProtocolVersionFinder(cloudService.getHost(), cloudService.getPort()).getProtocolVersion()
-        } catch (exception: Exception) {
-            exception.printStackTrace()
-            -1
-        }
     }
 
     override fun getCloudPlayerManagerClass(): KClass<out ICloudPlayerManager> {

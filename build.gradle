@@ -64,6 +64,7 @@ allprojects {
             url 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/'
         }
 
+        maven { url 'https://repo.opencollab.dev/maven-releases/' }
     }
 
     project.ext {
